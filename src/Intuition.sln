@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intuition.Services", "Intui
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intuition.ViewModels", "Intuition.ViewModel\Intuition.ViewModels.csproj", "{4CA4698B-1BD5-4571-B8ED-931AA2AA5339}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{BC56FA01-053A-45FF-831B-2A8ADDECDAAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
