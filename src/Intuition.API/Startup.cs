@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,15 @@ namespace Intuition.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Intuition.API", Version = "v1" });
             });
+
+            services.AddAuthentication()
+                //.AddGoogle("google", opt =>
+                //{
+                //    var googleAuth = Configuration.GetSection("Authentication:Google");
+                //    opt.ClientId = googleAuth["ClientId"];
+                //    opt.ClientSecret = googleAuth["ClientSecret"];
+                //    opt.SignInScheme = IdentityConstants.ExternalScheme;
+                //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

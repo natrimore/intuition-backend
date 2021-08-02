@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intuition.ViewModels", "Int
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{BC56FA01-053A-45FF-831B-2A8ADDECDAAB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{4A756CC2-4DA5-4F0D-89A9-359F9B331C53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Auth", "External\Google.Auth\Google.Auth.csproj", "{2E6C7325-59EA-4BD9-B258-B3CE4216C9F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,9 +45,16 @@ Global
 		{4CA4698B-1BD5-4571-B8ED-931AA2AA5339}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CA4698B-1BD5-4571-B8ED-931AA2AA5339}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CA4698B-1BD5-4571-B8ED-931AA2AA5339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E6C7325-59EA-4BD9-B258-B3CE4216C9F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E6C7325-59EA-4BD9-B258-B3CE4216C9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E6C7325-59EA-4BD9-B258-B3CE4216C9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E6C7325-59EA-4BD9-B258-B3CE4216C9F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2E6C7325-59EA-4BD9-B258-B3CE4216C9F1} = {4A756CC2-4DA5-4F0D-89A9-359F9B331C53}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C5545746-90EC-42CA-BFED-4E0FB3034EF2}
