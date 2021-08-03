@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using Intuition.Domains;
+using Intuition.ViewModels;
 
 namespace Intuition.API.Profiles
 {
-    public class UserStatusProfile
+    public class UserStatusProfile : Profile
     {
+        public UserStatusProfile()
+        {
+            CreateMap<UserStatusViewModel, UserStatus>()
+              .ReverseMap();
+        }
     }
 }

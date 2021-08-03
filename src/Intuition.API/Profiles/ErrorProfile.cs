@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace Intuition.API.Profiles
 {
-    public class UserProfileProfile : Profile
+    public class ErrorProfile : Profile
     {
-        public UserProfileProfile()
+        public ErrorProfile()
         {
-            CreateMap<UserProfileViewModel, UserProfile>()
-                .ForMember(d => d.AppUser, opt => opt.Ignore())
-                .ForMember(d => d.Gender, opt => opt.Ignore())
+            CreateMap<ErrorViewModel, Error>()
+                .ForMember(d => d.Language, opt => opt.Ignore())
                 .ReverseMap();
-
         }
     }
 }

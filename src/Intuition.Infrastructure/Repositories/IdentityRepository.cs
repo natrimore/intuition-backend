@@ -1,5 +1,5 @@
 ﻿using Intuition.Domains;
-using Intuition.Domains.Interfaces;
+using Intuition.Services.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;

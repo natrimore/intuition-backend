@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using Intuition.Domains.References;
+using Intuition.ViewModels;
 
 namespace Intuition.API.Profiles
 {
-    public class GenderProfile
+    public class GenderProfile : Profile
     {
+        public GenderProfile()
+        {
+            CreateMap<GenderViewModel, Gender>()
+                .ReverseMap();
+        }
     }
 }

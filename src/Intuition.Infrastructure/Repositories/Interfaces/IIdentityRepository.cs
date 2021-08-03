@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Intuition.Domains;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Intuition.Domains.Interfaces
+namespace Intuition.Services.Repositories.Interfaces
 {
     public interface IIdentityRepository
     {

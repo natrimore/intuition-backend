@@ -1,3 +1,4 @@
+using Intuition.API.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -27,7 +28,11 @@ namespace Intuition.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddCustomMvc()
+                .AddDbContexts(Configuration)
+                .AddCustomAuthentication(Configuration)
+                .AddCustomAuthorization()
+                .AddCustomIdentity();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Intuition.API", Version = "v1" });
