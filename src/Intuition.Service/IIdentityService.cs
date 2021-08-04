@@ -7,10 +7,5 @@ namespace Intuition.Services
 {
     public interface IIdentityService
     {
-        Task<GoogleJsonWebSignature.Payload> VerifyExternalToken(ExternalAuthDTO externalAuth);
-
-        Task<bool> UserExistAsync(Payload payload, ExternalAuthDTO externalAuth);
-
-        Task
     }
 }

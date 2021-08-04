@@ -29,26 +29,5 @@ namespace Intuition.Services
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
         }
-        public async Task<bool> UserExistAsync(GoogleJsonWebSignature.Payload payload, ExternalAuthDTO externalAuth)
-        {
-            var info = new UserLoginInfo(externalAuth.Provider, payload.Subject, externalAuth.Provider);
-
-            var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-            if (user == null)
-            {
-                user = await _userManager.FindByEmailAsync(payload.Email);
-                if (user != null)
-                {
-                    await _userManager.AddLoginAsync(user, info);
-                }
-            }
-
-            return user != null ? true : false;
-        }
-
-        public Task<GoogleJsonWebSignature.Payload> VerifyExternalToken(ExternalAuthDTO externalAuth)
-        {
-            return _googleService.VerifyGoogleToken(externalAuth);
-        }
     }
 }
