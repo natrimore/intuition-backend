@@ -5,9 +5,6 @@ using Intuition.External.Google.Auth.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Intuition.Services
@@ -31,27 +28,27 @@ namespace Intuition.Services
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
         }
-    }
 
-    public async Task<bool> UserExistAsync(GoogleJsonWebSignature.Payload payload, ExternalAuthDTO externalAuth)
-    {
-        var info = new UserLoginInfo(externalAuth.Provider, payload.Subject, externalAuth.Provider);
-
-        var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-        if (user == null)
+        public async Task<bool> UserExistAsync(GoogleJsonWebSignature.Payload payload, ExternalAuthDTO externalAuth)
         {
-            user = await _userManager.FindByEmailAsync(payload.Email);
-            if (user != null)
+            var info = new UserLoginInfo(externalAuth.Provider, payload.Subject, externalAuth.Provider);
+
+            var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            if (user == null)
             {
-                await _userManager.AddLoginAsync(user, info);
+                user = await _userManager.FindByEmailAsync(payload.Email);
+                if (user != null)
+                {
+                    await _userManager.AddLoginAsync(user, info);
+                }
             }
+
+            return user != null ? true : false;
         }
 
-        return user != null ? true : false;
-    }
-
-    public Task<GoogleJsonWebSignature.Payload> VerifyExternalToken(ExternalAuthDTO externalAuth)
-    {
-        return _googleService.VerifyGoogleToken(externalAuth);
+        public Task<GoogleJsonWebSignature.Payload> VerifyExternalToken(ExternalAuthDTO externalAuth)
+        {
+            return _googleService.VerifyGoogleToken(externalAuth);
+        }
     }
 }

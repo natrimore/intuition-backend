@@ -12,6 +12,7 @@
     <ProjectReference Include="..\External\Google.Auth\Google.Auth.csproj" />
     <ProjectReference Include="..\Intuition.Domain\Intuition.Domains.csproj" />
     <ProjectReference Include="..\Intuition.Infrastructure\Intuition.Infrastructures.csproj" />
+    <ProjectReference Include="..\Intuition.ViewModel\Intuition.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>
