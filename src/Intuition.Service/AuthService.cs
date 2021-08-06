@@ -2,6 +2,8 @@
 using Google.Auth;
 using Intuition.Domains;
 using Intuition.External.Google.Auth.Models;
+using Intuition.Services.Auth;
+using Intuition.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,6 +16,9 @@ namespace Intuition.Services
         private readonly IGoogleService _googleService;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<IdentityService> _logger;
+        private readonly IJwtFactory _jwtFactory;
+        private readonly JwtIssuerOptions _jwtOptions;
+        private readonly IJwtTokenValidator _jwtTokenValidator;
         public AuthService(
             IGoogleService googleService,
             UserManager<AppUser> userManager,
@@ -49,6 +54,56 @@ namespace Intuition.Services
         public Task<GoogleJsonWebSignature.Payload> VerifyExternalToken(ExternalAuthDTO externalAuth)
         {
             return _googleService.VerifyGoogleToken(externalAuth);
+        }
+
+        public async Task<TokenViewModel> GenerateTokenAsync(AppUser user)
+        {
+            try
+            {
+                //var identity = await GetClaimsIdentity(user, sessionId);
+
+                //if (identity == null)
+                //{
+                //    _logger.LogError("Couldn't generate claims identity.");
+
+                //    return new TokenGenerationResultViewModel
+                //    {
+                //        Result = TokenResponseType.ClaimsIdentityGenerationFail,
+                //        Token = null
+                //    };
+                //}
+
+                var jwt = new TokenViewModel
+                {
+                    //Login = identity.Claims.Single(c => c.Type == "UserName").Value,
+                    AuthToken = await _jwtFactory.GenerateEncodedToken(user.UserName),
+                    ExpiresIn = (int)_jwtOptions.ValidFor.TotalSeconds
+                };
+
+                //jwt.RefreshToken = GenerateRefreshToken();
+
+                //var refreshToken = GetRefreshTokenDomainModel(jwt.RefreshToken, ipAddress, user.Id, sessionId);
+
+                //user.LastSignedInOn = DateTime.UtcNow;
+
+                //await _refreshTokenRepository.DeleteBySessionIdForUserAsync(user.Id, sessionId);
+
+                //await _refreshTokenRepository.CreateAsync(refreshToken);
+
+                //await _identityRepository.SaveChangesAsync();
+
+                return jwt;
+                //return new TokenGenerationResultViewModel
+                //{
+                //    //Result = TokenResponseType.OK,
+                //    Token = jwt
+                //};
+            }
+            catch (Exception exc)
+            {
+                _logger.LogError($"An error occured while creating token. See exception details: {exc.Message}.");
+            }
+            return null;
         }
     }
 }

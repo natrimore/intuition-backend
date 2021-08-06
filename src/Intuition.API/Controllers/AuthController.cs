@@ -1,5 +1,6 @@
 ﻿using Intuition.External.Google.Auth.Models;
 using Intuition.Services;
+using Intuition.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,8 +19,8 @@ namespace Intuition.API.Controllers
                 throw new ArgumentNullException(nameof(service));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ExternalLogin([FromBody] ExternalAuthDTO externalAuth)
+        [HttpPost("external-login")]
+        public async Task<IActionResult> ExternalLoginAsync([FromBody] ExternalAuthDTO externalAuth)
         {
             var payload = await _service.VerifyExternalToken(externalAuth);
 
@@ -28,7 +29,14 @@ namespace Intuition.API.Controllers
                 return BadRequest("Invalid external authentication");
             }
 
-            if ()
+            return Ok();
+            //if ()
+        }
+
+        [HttpPost("token")]
+        public async Task<IActionResult> GenerateTokenAsync([FromBody] CredentialsViewModel credentials)
+        {
+            return Ok(_service.GenerateTokenAsync(new Domains.AppUser { UserName = credentials.UserName }));
         }
     }
 }

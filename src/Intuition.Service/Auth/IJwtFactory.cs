@@ -9,7 +9,7 @@ namespace Intuition.Services.Auth
 {
     public interface IJwtFactory
     {
-        Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity);
+        Task<string> GenerateEncodedToken(string userName);
         ClaimsIdentity GenerateClaimsIdentity(string userName, IEnumerable<Claim> claims);
     }
 }
