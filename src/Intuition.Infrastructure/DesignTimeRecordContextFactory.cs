@@ -14,7 +14,7 @@ namespace Intuition.Infrastructures
                 .AddJsonFile("appsettings.json")
                 .Build();
             var builder = new DbContextOptionsBuilder<RecordContext>();
-            var connectionString = configuration.GetConnectionString("MobilPayDbPostgreSql");
+            var connectionString = configuration.GetConnectionString("IntuitionDbPostgreSql");
             builder.UseNpgsql(connectionString);
 
             return new RecordContext(builder.Options);

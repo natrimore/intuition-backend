@@ -38,7 +38,7 @@ namespace Intuition.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Intuition.API", Version = "v1" });
             });
 
-            services.AddAuthentication()
+            services.AddAuthentication();
                 //.AddGoogle("google", opt =>
                 //{
                 //    var googleAuth = Configuration.GetSection("Authentication:Google");

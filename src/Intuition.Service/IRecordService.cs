@@ -8,7 +8,9 @@ namespace Intuition.Services
 {
     public interface IRecordService
     {
-        Task<RecordViewModel> AddData();
+        Task<RecordViewModel> AddAsync(Guid userId, string data); 
+        
+        Task<RecordViewModel> AddAsync(RecordToAddDTO record);
 
         Task<IList<RecordViewModel>> GetAllAsync();
 

@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Intuition.Infrastructures
 {
-    public class DesignTImeIntuitionContextFactory : IDesignTimeDbContextFactory<IdentityContext>
+    public class DesignTImeIdentityContextFactory : IDesignTimeDbContextFactory<IdentityContext>
     {
         public IdentityContext CreateDbContext(string[] args)
         {
@@ -14,7 +14,7 @@ namespace Intuition.Infrastructures
                 .AddJsonFile("appsettings.json")
                 .Build();
             var builder = new DbContextOptionsBuilder<IdentityContext>();
-            var connectionString = configuration.GetConnectionString("MobilPayDbPostgreSql");
+            var connectionString = configuration.GetConnectionString("IntuitionDbPostgreSql");
             builder.UseNpgsql(connectionString);
 
             return new IdentityContext(builder.Options);

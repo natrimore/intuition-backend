@@ -35,7 +35,19 @@ namespace Intuition.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] RecordToAddDTO record)
         {
-            return Ok();
+            var userId = Guid.Parse(User.Claims.SingleOrDefault(w => w.Type == "Id").Value);
+
+            var model = await _service.AddAsync(userId, record.Data);
+
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            return CreatedAtRoute(nameof(GetAsync), new
+            {
+                recordId = model.Id
+            }, model);
         }
     }
 }
