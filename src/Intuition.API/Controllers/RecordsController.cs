@@ -1,5 +1,7 @@
 ﻿using Intuition.Services;
 using Intuition.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,6 +14,7 @@ namespace Intuition.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "CustomerPolicy", AuthenticationSchemes = "Bearer")]
     public class RecordsController : ControllerBase
     {
         private readonly IRecordService _service;
@@ -35,7 +38,7 @@ namespace Intuition.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] RecordToAddDTO record)
         {
-            var userId = Guid.Parse(User.Claims.SingleOrDefault(w => w.Type == "Id").Value);
+            var userId = Guid.Parse(User.Claims.SingleOrDefault(w => w.Type == "id").Value);
 
             var model = await _service.AddAsync(userId, record.Data);
 
@@ -44,10 +47,7 @@ namespace Intuition.API.Controllers
                 return BadRequest();
             }
 
-            return CreatedAtRoute(nameof(GetAsync), new
-            {
-                recordId = model.Id
-            }, model);
+            return Ok(model);
         }
     }
 }

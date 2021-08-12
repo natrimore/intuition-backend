@@ -1,0 +1,4 @@
+﻿1|Active|Active|This status indicates that user is active.
+2|Inactive|Inactive|This status means that the user has not confirmed phone number yet.
+3|Deleted|Deleted|This status means that the user is deleted from the system.
+4|Blocked|Blocked|This status means that the user is blockes for some reasons.

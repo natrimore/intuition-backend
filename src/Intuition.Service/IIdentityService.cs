@@ -1,11 +1,17 @@
-﻿using Google.Apis.Auth;
-using Intuition.External.Google.Auth.Models;
+﻿using Intuition.ViewModels;
+using System;
 using System.Threading.Tasks;
-using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Intuition.Services
 {
     public interface IIdentityService
     {
+        Task<AppUserViewModel> CreateUserAsync(CredentialsViewModel model);
+
+        Task<AppUserViewModel> FindByIdAsync(Guid userId);
+
+        Task<bool> UserExistsAsync(string userName);
+
+        Task<AppUserViewModel> FindByNameAsync(string userName);
     }
 }

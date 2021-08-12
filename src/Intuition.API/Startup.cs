@@ -1,17 +1,15 @@
+using AutoMapper;
 using Intuition.API.Extensions;
+using Intuition.API.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Intuition.API
 {
@@ -22,17 +20,29 @@ namespace Intuition.API
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddCustomMvc()
+            services
+                .AddCustomMvc()
+
                 .AddDbContexts(Configuration)
+
                 .AddCustomAuthentication(Configuration)
+                
+                .AddSingleton(Configuration)
+                
+                .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
+                
                 .AddCustomAuthorization()
+
+                .AddServices()
+
                 .AddCustomIdentity();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Intuition.API", Version = "v1" });
@@ -49,7 +59,7 @@ namespace Intuition.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IdentityAppInitializer identityAppInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -57,6 +67,24 @@ namespace Intuition.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Intuition.API v1"));
             }
+
+            app.UseSerilogRequestLogging();
+
+            app.UseCors(config =>
+            {
+                config.AllowAnyHeader();
+                config.AllowAnyMethod();
+                config.AllowAnyOrigin();
+            });
+
+            app.UseExceptionHandler(hanlder =>
+            {
+                hanlder.Run(async context =>
+                {
+                    context.Response.StatusCode = 500;
+                    await context.Response.WriteAsync("Ooops! An unexpected fault happened. Try again later.");
+                });
+            });
 
             app.UseRouting();
 
@@ -66,6 +94,10 @@ namespace Intuition.API
             {
                 endpoints.MapControllers();
             });
+
+            identityAppInitializer
+                .SeedAsync()
+                .Wait();
         }
     }
 }

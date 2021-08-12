@@ -3,10 +3,15 @@ using Google.Auth;
 using Intuition.Domains;
 using Intuition.External.Google.Auth.Models;
 using Intuition.Services.Auth;
+using Intuition.Services.Repositories.Interfaces;
 using Intuition.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Intuition.Services
@@ -14,6 +19,7 @@ namespace Intuition.Services
     public class AuthService : IAuthService
     {
         private readonly IGoogleService _googleService;
+        private readonly IIdentityRepository _identityRepository;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<IdentityService> _logger;
         private readonly IJwtFactory _jwtFactory;
@@ -21,7 +27,11 @@ namespace Intuition.Services
         private readonly IJwtTokenValidator _jwtTokenValidator;
         public AuthService(
             IGoogleService googleService,
+            IIdentityRepository identityRepository,
             UserManager<AppUser> userManager,
+            IJwtFactory jwtFactory,
+            IJwtTokenValidator jwtTokenValidator,
+            IOptions<JwtIssuerOptions> jwtOptions,
             ILogger<IdentityService> logger)
         {
             _googleService = googleService ??
@@ -32,6 +42,18 @@ namespace Intuition.Services
 
             _logger = logger ??
                 throw new ArgumentNullException(nameof(logger));
+
+            _jwtFactory = jwtFactory ??
+                throw new ArgumentNullException(nameof(jwtFactory));
+
+            _jwtTokenValidator = jwtTokenValidator ??
+                throw new ArgumentNullException(nameof(jwtTokenValidator));
+
+            _jwtOptions = jwtOptions.Value ??
+                throw new ArgumentNullException(nameof(jwtOptions));
+
+            _identityRepository = identityRepository ??
+                throw new ArgumentNullException(nameof(identityRepository));
         }
 
         public async Task<bool> UserExistAsync(GoogleJsonWebSignature.Payload payload, ExternalAuthDTO externalAuth)
@@ -56,27 +78,25 @@ namespace Intuition.Services
             return _googleService.VerifyGoogleToken(externalAuth);
         }
 
-        public async Task<TokenViewModel> GenerateTokenAsync(AppUser user)
+        public async Task<TokenViewModel> GenerateTokenAsync(CredentialsViewModel model)
         {
             try
             {
-                //var identity = await GetClaimsIdentity(user, sessionId);
+                var user = await _identityRepository.FindByNameAsync(model.UserName);
 
-                //if (identity == null)
-                //{
-                //    _logger.LogError("Couldn't generate claims identity.");
+                var identity = await GetClaimsIdentityAsync(user);
 
-                //    return new TokenGenerationResultViewModel
-                //    {
-                //        Result = TokenResponseType.ClaimsIdentityGenerationFail,
-                //        Token = null
-                //    };
-                //}
+                if (identity == null)
+                {
+                    _logger.LogError("Couldn't generate claims identity.");
+
+                    return null;
+                }
 
                 var jwt = new TokenViewModel
                 {
-                    //Login = identity.Claims.Single(c => c.Type == "UserName").Value,
-                    AuthToken = await _jwtFactory.GenerateEncodedToken(user.UserName),
+                    Login = identity.Claims.Single(c => c.Type == "UserName").Value,
+                    AuthToken = await _jwtFactory.GenerateEncodedToken(user.UserName, identity),
                     ExpiresIn = (int)_jwtOptions.ValidFor.TotalSeconds
                 };
 
@@ -104,6 +124,26 @@ namespace Intuition.Services
                 _logger.LogError($"An error occured while creating token. See exception details: {exc.Message}.");
             }
             return null;
+        }
+
+        private async Task<ClaimsIdentity> GetClaimsIdentityAsync(AppUser user)
+        {
+            var userClaims = await _userManager.GetClaimsAsync(user);
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var claims = new Claim[]
+            {
+                new Claim("id", user.Id.ToString()),
+                new Claim("UserName", user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            }
+            .Union(userClaims)
+            .Union(roles.Select(w => new Claim(ClaimTypes.Role, w)));
+
+            var identity = _jwtFactory.GenerateClaimsIdentity(user.UserName, claims);
+
+            return identity;
         }
     }
 }

@@ -13,22 +13,17 @@ namespace Intuition.Services
 {
     public class IdentityService : IIdentityService
     {
-        private readonly IGoogleService _googleService;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<IdentityService> _logger;
         private readonly IIdentityRepository _identityRepository;
         private readonly IMapper _mapper;
         public IdentityService(
-            IGoogleService googleService,
             UserManager<AppUser> userManager,
             ILogger<IdentityService> logger,
             IIdentityRepository identityRepository,
             IMapper mapper
         )
         {
-            _googleService = googleService ??
-                throw new ArgumentNullException(nameof(googleService));
-
             _userManager = userManager ??
                 throw new ArgumentNullException(nameof(userManager));
 
@@ -66,7 +61,7 @@ namespace Intuition.Services
             var claims = new[]
             {
                 new Claim("IsCustomer", "True"),
-                //new Claim("PhoneNumberConfirmed", "False")
+                new Claim("PhoneNumberConfirmed", "True")
             };
 
             var claimResult = await _userManager.AddClaimsAsync(entity, claims);
@@ -81,6 +76,31 @@ namespace Intuition.Services
             // publishing an event
 
             return _mapper.Map<AppUserViewModel>(entity);
+        }
+
+        public async Task<AppUserViewModel> FindByIdAsync(Guid userId)
+        {
+            var entity = await _identityRepository.FindByIdAsync(userId);
+
+            var model = _mapper.Map<AppUserViewModel>(entity);
+
+            return model;
+        }
+
+        public async Task<bool> UserExistsAsync(string userName)
+        {
+            var user = await FindByNameAsync(userName);
+
+            return user != null;
+        }
+
+        public async Task<AppUserViewModel> FindByNameAsync(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+
+            var model = _mapper.Map<AppUserViewModel>(user);
+
+            return model;
         }
 
         private async Task CreateUserProfileAsync(AppUser entity)
@@ -99,8 +119,8 @@ namespace Intuition.Services
             var userSettingCreated = await _identityRepository.CreateUserSettingAsync(new UserSetting
             {
                 UserId = entity.Id,
-                //LanguageId = Constants.Miscellaneous.ru,
-                //AppTimeZoneId = Constants.Miscellaneous.DefaultTimeZoneId
+                LanguageId = "ru",
+                AppTimeZoneId = "UTC"
             });
 
             if (!userSettingCreated)

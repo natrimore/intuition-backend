@@ -13,6 +13,6 @@ namespace Intuition.Services
 
         Task<bool> UserExistAsync(Payload payload, ExternalAuthDTO externalAuth);
 
-        Task<TokenViewModel> GenerateTokenAsync(AppUser user);
+        Task<TokenViewModel> GenerateTokenAsync(CredentialsViewModel model);
     }
 }

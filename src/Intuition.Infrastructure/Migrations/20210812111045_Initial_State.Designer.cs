@@ -2,15 +2,17 @@
 using Intuition.Infrastructures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Intuition.Infrastructures.Migrations.Reference
+namespace Intuition.Infrastructures.Migrations
 {
     [DbContext(typeof(ReferenceContext))]
-    partial class ReferenceContextModelSnapshot : ModelSnapshot
+    [Migration("20210812111045_Initial_State")]
+    partial class Initial_State
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,22 +24,32 @@ namespace Intuition.Infrastructures.Migrations.Reference
             modelBuilder.Entity("Intuition.Domains.References.AppTimeZone", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("BaseUtcOffsetHours")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasComment("The minutes component of the time interval.");
 
                     b.Property<int>("BaseUtcOffsetMinutes")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasComment("The minutes component of the time interval.");
 
                     b.Property<int>("BaseUtcOffsetSeconds")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasComment("The seconds component of the time interval.");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasComment("The general display name that represents the time zone.");
 
                     b.Property<string>("StandartName")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasComment("The display name for the time zone's standard time.");
 
                     b.HasKey("Id");
 
@@ -52,10 +64,14 @@ namespace Intuition.Infrastructures.Migrations.Reference
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
 
                     b.HasKey("Id");
 
@@ -65,13 +81,18 @@ namespace Intuition.Infrastructures.Migrations.Reference
             modelBuilder.Entity("Intuition.Domains.References.Language", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 

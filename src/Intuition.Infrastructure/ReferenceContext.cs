@@ -1,4 +1,5 @@
 ﻿using Intuition.Domains.References;
+using Intuition.Infrastructures.EntityConfigurations.Reference;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intuition.Infrastructures
@@ -17,11 +18,11 @@ namespace Intuition.Infrastructures
 
             builder.HasDefaultSchema(DEFAULT_SCHEME);
 
-            builder.Entity<Gender>().ToTable(nameof(Genders)).HasKey(w => new { w.Id });
+            builder.ApplyConfiguration(new AppTimeZoneEntityTypeConfiguration());
 
-            builder.Entity<Language>().ToTable(nameof(Languages)).HasKey(w => new { w.Id });
+            builder.ApplyConfiguration(new LanguageEntityTypeConfiguration());
 
-            builder.Entity<AppTimeZone>().ToTable(nameof(AppTimeZones)).HasKey(w => new { w.Id });
+            builder.ApplyConfiguration(new GenderEntityTypeConfiguration());
         }
 
         public DbSet<Gender> Genders { get; set; }

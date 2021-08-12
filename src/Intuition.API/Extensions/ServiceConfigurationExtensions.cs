@@ -1,8 +1,13 @@
-﻿using Intuition.Domains;
+﻿using Google.Auth;
+using Intuition.API.Helpers;
+using Intuition.Domains;
 using Intuition.Infrastructures;
 using Intuition.Infrastructures.Repositories;
+using Intuition.Infrastructures.Repositories.Interfaces;
+using Intuition.Services;
 using Intuition.Services.Auth;
 using Intuition.Services.Repositories.Interfaces;
+using Intuition.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -68,14 +73,31 @@ namespace Intuition.API.Extensions
         public static IServiceCollection AddDbContexts(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<IdentityContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("MobilPayDbPostgreSql")));
+                options.UseNpgsql(configuration.GetConnectionString("IntuitionDbPostgreSql")));
+
+            services.AddDbContext<ReferenceContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("IntuitionDbPostgreSql")));
+
+
+            services.AddDbContext<RecordContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("IntuitionDbPostgreSql")));
 
             return services;
         }
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IIdentityRepository, IdentityRepository>();
+            services
+                .AddScoped<IIdentityRepository, IdentityRepository>()
+                .AddScoped<IAuthService, AuthService>()
+                .AddScoped<IJwtTokenValidator, JwtTokenValidator>()
+                .AddScoped<IRecordService, RecordService>()
+                .AddScoped<IRecordRepository, RecordRepository>()
+                .AddScoped<IIdentityService, IdentityService>()
+                .AddScoped<IGoogleService, GoogleService>()
+                .AddTransient<IdentityAppInitializer>()
+                .AddTransient<ReferenceContext>()
+                .AddSingleton<IJwtFactory, JwtFactory>();
 
             return services;
         }
@@ -146,7 +168,7 @@ namespace Intuition.API.Extensions
                 options.AddPolicy("CustomerPolicy", policy =>
                 {
                     policy.RequireRole(new string[] { "Customer" });
-                    policy.RequireClaim("PhoneNumberConfirmed", new string[] { "True" });
+                    //policy.RequireClaim("PhoneNumberConfirmed", new string[] { "True" });
                 });
                 options.AddPolicy("UnverifiedCustomerPolicy", policy =>
                 {

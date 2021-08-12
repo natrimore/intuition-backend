@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Intuition.Infrastructures.Migrations
+namespace Intuition.Infrastructures.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20210810130836_Initial")]
-    partial class Initial
+    [Migration("20210811064230_Initial_State")]
+    partial class Initial_State
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

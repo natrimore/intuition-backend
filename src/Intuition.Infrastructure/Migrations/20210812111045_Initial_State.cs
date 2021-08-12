@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Intuition.Infrastructures.Migrations.Reference
+namespace Intuition.Infrastructures.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Initial_State : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,12 +15,12 @@ namespace Intuition.Infrastructures.Migrations.Reference
                 schema: "Reference",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    DisplayName = table.Column<string>(type: "text", nullable: true),
-                    StandartName = table.Column<string>(type: "text", nullable: true),
-                    BaseUtcOffsetHours = table.Column<int>(type: "integer", nullable: false),
-                    BaseUtcOffsetMinutes = table.Column<int>(type: "integer", nullable: false),
-                    BaseUtcOffsetSeconds = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, comment: "The general display name that represents the time zone."),
+                    StandartName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, comment: "The display name for the time zone's standard time."),
+                    BaseUtcOffsetHours = table.Column<int>(type: "integer", nullable: false, comment: "The minutes component of the time interval."),
+                    BaseUtcOffsetMinutes = table.Column<int>(type: "integer", nullable: false, comment: "The minutes component of the time interval."),
+                    BaseUtcOffsetSeconds = table.Column<int>(type: "integer", nullable: false, comment: "The seconds component of the time interval.")
                 },
                 constraints: table =>
                 {
@@ -34,8 +34,8 @@ namespace Intuition.Infrastructures.Migrations.Reference
                 {
                     Id = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    DisplayName = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,9 +47,9 @@ namespace Intuition.Infrastructures.Migrations.Reference
                 schema: "Reference",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    DisplayName = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
+                    Name = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(70)", maxLength: 70, nullable: false)
                 },
                 constraints: table =>
                 {

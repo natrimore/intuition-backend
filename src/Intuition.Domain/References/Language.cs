@@ -2,7 +2,7 @@
 
 namespace Intuition.Domains.References
 {
-    public class Language : ProtectedReferenceEntityBase<string>
+    public class Language : ReferenceEntityBase<string>
     {
     }
 }

@@ -24,11 +24,11 @@ namespace Intuition.Services.Auth
             return new ClaimsIdentity(claims);
         }
 
-        public Task<string> GenerateEncodedToken(string userName)
+        public Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity)
         {
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
-                //Subject = identity,
+                Subject = identity,
                 Expires = _jwtOptions.Expiration,
                 Audience = _jwtOptions.Audience,
                 SigningCredentials = _jwtOptions.SigningCredentials,

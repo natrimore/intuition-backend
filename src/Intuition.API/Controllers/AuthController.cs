@@ -36,7 +36,7 @@ namespace Intuition.API.Controllers
         [HttpPost("token")]
         public async Task<IActionResult> GenerateTokenAsync([FromBody] CredentialsViewModel credentials)
         {
-            return Ok(_service.GenerateTokenAsync(new Domains.AppUser { UserName = credentials.UserName }));
+            return Ok(await _service.GenerateTokenAsync(credentials));
         }
     }
 }

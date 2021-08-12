@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Intuition.Infrastructures.Migrations
+namespace Intuition.Infrastructures.Migrations.Identity
 {
-    public partial class Initial : Migration
+    public partial class Initial_State : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,51 +29,51 @@ namespace Intuition.Infrastructures.Migrations
                     table.PrimaryKey("PK_AppRoles", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "AppTimeZones",
-                schema: "Reference",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    DisplayName = table.Column<string>(type: "text", nullable: true),
-                    StandartName = table.Column<string>(type: "text", nullable: true),
-                    BaseUtcOffsetHours = table.Column<int>(type: "integer", nullable: false),
-                    BaseUtcOffsetMinutes = table.Column<int>(type: "integer", nullable: false),
-                    BaseUtcOffsetSeconds = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppTimeZones", x => x.Id);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "AppTimeZones",
+            //    schema: "Reference",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<string>(type: "text", nullable: false),
+            //        DisplayName = table.Column<string>(type: "text", nullable: true),
+            //        StandartName = table.Column<string>(type: "text", nullable: true),
+            //        BaseUtcOffsetHours = table.Column<int>(type: "integer", nullable: false),
+            //        BaseUtcOffsetMinutes = table.Column<int>(type: "integer", nullable: false),
+            //        BaseUtcOffsetSeconds = table.Column<int>(type: "integer", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_AppTimeZones", x => x.Id);
+            //    });
 
-            migrationBuilder.CreateTable(
-                name: "Genders",
-                schema: "Reference",
-                columns: table => new
-                {
-                    Id = table.Column<short>(type: "smallint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    DisplayName = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Genders", x => x.Id);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "Genders",
+            //    schema: "Reference",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<short>(type: "smallint", nullable: false)
+            //            .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+            //        Name = table.Column<string>(type: "text", nullable: true),
+            //        DisplayName = table.Column<string>(type: "text", nullable: true)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Genders", x => x.Id);
+            //    });
 
-            migrationBuilder.CreateTable(
-                name: "Languages",
-                schema: "Reference",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    DisplayName = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Languages", x => x.Id);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "Languages",
+            //    schema: "Reference",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<string>(type: "text", nullable: false),
+            //        Name = table.Column<string>(type: "text", nullable: true),
+            //        DisplayName = table.Column<string>(type: "text", nullable: true)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Languages", x => x.Id);
+            //    });
 
             migrationBuilder.CreateTable(
                 name: "UserStatuses",
@@ -505,21 +505,21 @@ namespace Intuition.Infrastructures.Migrations
                 name: "AppRoles",
                 schema: "Identity");
 
-            migrationBuilder.DropTable(
-                name: "Genders",
-                schema: "Reference");
+            //migrationBuilder.DropTable(
+            //    name: "Genders",
+            //    schema: "Reference");
 
-            migrationBuilder.DropTable(
-                name: "AppTimeZones",
-                schema: "Reference");
+            //migrationBuilder.DropTable(
+            //    name: "AppTimeZones",
+            //    schema: "Reference");
 
             migrationBuilder.DropTable(
                 name: "AppUsers",
                 schema: "Identity");
 
-            migrationBuilder.DropTable(
-                name: "Languages",
-                schema: "Reference");
+            //migrationBuilder.DropTable(
+            //    name: "Languages",
+            //    schema: "Reference");
 
             migrationBuilder.DropTable(
                 name: "UserStatuses",

@@ -3,6 +3,7 @@ using Intuition.Infrastructures.Repositories.Interfaces;
 using Intuition.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Intuition.Services
     {
         private readonly IRecordRepository _repository;
         private readonly IMapper _mapper;
+        private static object locker = new object();
         public RecordService(IRecordRepository repository, IMapper mapper)
         {
             _repository = repository ??
@@ -59,15 +61,15 @@ namespace Intuition.Services
 
             var externalDetailsTask = GetListOfRecordAsync(externalData);
 
-            await Task.WhenAll(internalDetailsTask, externalDetailsTask);
+            //await Task.WhenAll(internalDetailsTask, externalDetailsTask);
 
-            var internalDetails = internalDetailsTask.Result;
+            var internalDetails = internalDetailsTask;
 
-            var externalDetails = externalDetailsTask.Result;
+            var externalDetails = externalDetailsTask;
 
-            internalDetails.Union(externalDetails);
+            var result = internalDetails.Union(externalDetails).ToList();
 
-            return MakeData(internalDetails);
+            return MakeData(result);
         }
 
         private string MakeData(List<RecordDetailsViewModel> details)
@@ -76,7 +78,7 @@ namespace Intuition.Services
 
             foreach (var detail in details)
             {
-                var text = String.Join("|", new { detail.Date, detail.TotalAttempts, detail.CorrectAnswers });
+                var text = String.Join("|", $"{detail.Date}|{detail.TotalAttempts}|{detail.CorrectAnswers}");
                 sb.Append(text);
                 sb.Append(';');
             }
@@ -84,32 +86,41 @@ namespace Intuition.Services
             return sb.ToString();
         }
 
-        private Task<List<RecordDetailsViewModel>> GetListOfRecordAsync(string data)
+        private List<RecordDetailsViewModel> GetListOfRecordAsync(string data)
         {
-            var recordDetails = new List<RecordDetailsViewModel>();
 
-            var task = Task<List<RecordDetailsViewModel>>.Run(() =>
-            {
+            //var task = Task<List<RecordDetailsViewModel>>.Run(() =>
+            //{
+                var recordDetails = new List<RecordDetailsViewModel>();
+                
                 var externalSplittedValue = data.Split(";");
 
                 foreach (var detail in externalSplittedValue)
                 {
-                    var splittedValue = detail.Split('|');
+                    lock (locker) {
+                        if (string.IsNullOrWhiteSpace(detail))
+                        {
+                            continue;
+                        }
+                        var splittedValue = detail.Split('|');
+                        
+                        var date = Convert.ToDateTime(splittedValue[0]);
 
-                    var record = new RecordDetailsViewModel()
-                    {
-                        Date = DateTime.Parse(splittedValue[0]),
-                        TotalAttempts = Convert.ToInt32(splittedValue[1]),
-                        CorrectAnswers = Convert.ToInt32(splittedValue[2])
-                    };
+                        var record = new RecordDetailsViewModel()
+                        {
+                            Date = date,
+                            TotalAttempts = Convert.ToInt32(splittedValue[1]),
+                            CorrectAnswers = Convert.ToInt32(splittedValue[2])
+                        };
 
-                    recordDetails.Add(record);
+                        recordDetails.Add(record);
+                    }
                 }
 
                 return recordDetails;
-            });
+            //});
 
-            return task;
+            //return task;
         }
 
         public Task<RecordViewModel> AddAsync(RecordToAddDTO record)
