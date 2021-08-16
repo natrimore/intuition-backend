@@ -65,7 +65,7 @@ namespace Intuition.API
                 //})
                 //.UseIISIntegration()
                 .UseStartup<Startup>()
-                .UseUrls("http://*:8010")
+                .UseUrls("http://*:8020")
                 .UseSerilog()
                 .Build();
         }
