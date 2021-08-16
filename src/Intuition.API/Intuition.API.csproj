@@ -32,4 +32,23 @@
 		<ProjectReference Include="..\Intuition.ViewModel\Intuition.ViewModels.csproj" />
 	</ItemGroup>
 
+
+	<ItemGroup>
+		<Folder Include="References\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="References\genders.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="References\languages.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="References\user_statuses.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="References\time_zones.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>
