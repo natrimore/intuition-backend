@@ -19,6 +19,7 @@ namespace Intuition.Services
     public class AuthService : IAuthService
     {
         private readonly IGoogleService _googleService;
+        private readonly IPasswordHasher<AppUser> _passwordHasher;
         private readonly IIdentityRepository _identityRepository;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<IdentityService> _logger;
@@ -32,7 +33,8 @@ namespace Intuition.Services
             IJwtFactory jwtFactory,
             IJwtTokenValidator jwtTokenValidator,
             IOptions<JwtIssuerOptions> jwtOptions,
-            ILogger<IdentityService> logger)
+            ILogger<IdentityService> logger,
+            IPasswordHasher<AppUser> passwordHasher)
         {
             _googleService = googleService ??
                 throw new ArgumentNullException(nameof(googleService));
@@ -54,6 +56,9 @@ namespace Intuition.Services
 
             _identityRepository = identityRepository ??
                 throw new ArgumentNullException(nameof(identityRepository));
+
+            _passwordHasher = passwordHasher ??
+                throw new ArgumentNullException(nameof(passwordHasher));
         }
 
         public async Task<bool> UserExistAsync(GoogleJsonWebSignature.Payload payload, ExternalAuthDTO externalAuth)
@@ -84,6 +89,13 @@ namespace Intuition.Services
             {
                 var user = await _identityRepository.FindByNameAsync(model.UserName);
 
+                if (user != null && _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password) != PasswordVerificationResult.Success)
+                {
+                    _logger.LogError("Invalid username of password");
+                    
+                    return null;
+                }
+
                 var identity = await GetClaimsIdentityAsync(user);
 
                 if (identity == null)
@@ -92,6 +104,7 @@ namespace Intuition.Services
 
                     return null;
                 }
+
 
                 var jwt = new TokenViewModel
                 {

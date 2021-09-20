@@ -3,7 +3,6 @@ using Intuition.Infrastructures.Repositories.Interfaces;
 using Intuition.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,39 +87,35 @@ namespace Intuition.Services
 
         private List<RecordDetailsViewModel> GetListOfRecordAsync(string data)
         {
+            var recordDetails = new List<RecordDetailsViewModel>();
 
-            //var task = Task<List<RecordDetailsViewModel>>.Run(() =>
-            //{
-                var recordDetails = new List<RecordDetailsViewModel>();
-                
-                var externalSplittedValue = data.Split(";");
+            var externalSplittedValue = data.Split(";");
 
-                foreach (var detail in externalSplittedValue)
+            foreach (var detail in externalSplittedValue)
+            {
+                lock (locker)
                 {
-                    lock (locker) {
-                        if (string.IsNullOrWhiteSpace(detail))
-                        {
-                            continue;
-                        }
-                        var splittedValue = detail.Split('|');
-                        
-                        var date = Convert.ToDateTime(splittedValue[0]);
-
-                        var record = new RecordDetailsViewModel()
-                        {
-                            Date = date,
-                            TotalAttempts = Convert.ToInt32(splittedValue[1]),
-                            CorrectAnswers = Convert.ToInt32(splittedValue[2])
-                        };
-
-                        recordDetails.Add(record);
+                    if (string.IsNullOrWhiteSpace(detail))
+                    {
+                        continue;
                     }
+                    var splittedValue = detail.Split('|');
+
+                    var date = Convert.ToDateTime(splittedValue[0]);
+
+                    var record = new RecordDetailsViewModel()
+                    {
+                        Date = date,
+                        TotalAttempts = Convert.ToInt32(splittedValue[1]),
+                        CorrectAnswers = Convert.ToInt32(splittedValue[2])
+                    };
+
+                    recordDetails.Add(record);
                 }
+            }
 
-                return recordDetails;
-            //});
+            return recordDetails;
 
-            //return task;
         }
 
         public Task<RecordViewModel> AddAsync(RecordToAddDTO record)
@@ -128,14 +123,13 @@ namespace Intuition.Services
             throw new System.NotImplementedException();
         }
 
-        public Task<IList<RecordViewModel>> GetAllAsync()
+        public async Task<List<RecordDetailsViewModel>> GetByDateAsync(DateTime searchDate)
         {
-            throw new System.NotImplementedException();
-        }
+            var entity = await _repository.GetByDateAsync(searchDate);
 
-        public Task<RecordViewModel> GetByDateAsync(DateTime date)
-        {
-            throw new NotImplementedException();
+            var recordDetails = GetListOfRecordAsync(entity.Data);
+
+            return recordDetails;
         }
     }
 }

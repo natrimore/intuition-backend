@@ -90,6 +90,11 @@ namespace Intuition.Infrastructures.Repositories
             return (await _context.SaveChangesAsync()) > 0;
         }
 
+        public Task<Record> GetByDateAsync(DateTime searchDate)
+        {
+            return _context.Records.SingleOrDefaultAsync(w => w.Date == searchDate);
+        }
+
         #region Dispose
         private bool disposedValue;
 

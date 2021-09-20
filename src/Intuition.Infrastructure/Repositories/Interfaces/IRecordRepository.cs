@@ -18,6 +18,8 @@ namespace Intuition.Infrastructures.Repositories.Interfaces
 
         Task<List<Record>> GetAsync(Expression<Func<Record, bool>> predicate, int? skip = null, int? take = null);
 
+        Task<Record> GetByDateAsync(DateTime searchDate);
+
         Task<bool> SaveChangesAsync();
 
     }

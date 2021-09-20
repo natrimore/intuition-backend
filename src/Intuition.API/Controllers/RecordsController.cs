@@ -30,9 +30,14 @@ namespace Intuition.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync([FromQuery] DateTime searchDate)
         {
-            return Ok();
+            if (searchDate != null)
+            {
+                return Ok(_service.GetByDateAsync(searchDate));
+            }
+
+            return BadRequest();
         }
 
         [HttpPost]
